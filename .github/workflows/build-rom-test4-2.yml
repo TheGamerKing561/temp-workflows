@@ -388,11 +388,9 @@ jobs:
               /dev/nbd3 \
               -N android-out
           
-          sudo mount /dev/nbd3 /storage/android-prebuilts/prebuilts
+          sudo mount /dev/nbd3 /storage/android-rom/rom/prebuilts
           
-          sudo chown runner:runner /storage/android-prebuilts/prebuilts
-
-          ln -s /storage/android-prebuilts/prebuilts /storage/android-rom/rom/prebuilts
+          sudo chown runner:runner /storage/android-rom/rom/prebuilts
 
           echo "=========================================="
           echo "ROM IMAGE READY"
