@@ -88,6 +88,12 @@ on:
         default: 17400
         type: number
 
+      prebuilts_ip:
+        description: Prebuilts runner Tailscale IP
+        required: false
+        default: ""
+        type: string
+
       role:
         description: DO NOT TOUCH - Internal workflow role
         required: false
@@ -373,6 +379,20 @@ jobs:
           echo
           echo "ROM mount:"
           mount | grep "$ROM_MOUNT"
+
+          sudo mkdir -p /storage/android-prebuilts/prebuilts
+          
+          sudo nbd-client \
+              ${{ inputs.prebuilts_ip }} \
+              10809 \
+              /dev/nbd3 \
+              -N android-out
+          
+          sudo mount /dev/nbd3 /storage/android-prebuilts/prebuilts
+          
+          sudo chown runner:runner /storage/android-prebuilts/prebuilts
+
+          ln -s /storage/android-prebuilts/prebuilts /storage/android-rom/rom/prebuilts
 
           echo "=========================================="
           echo "ROM IMAGE READY"
@@ -1184,24 +1204,6 @@ jobs:
         run: |
           set -e
 
-          sudo sync || true
-          
-            echo "Unmounting ROM image..."
-
-            sudo umount \
-              /storage/android-rom/rom \
-              || true
-
-            echo "Unmounting OUT storage..."
-
-            sudo umount \
-              /storage/android-out/out \
-              || true
-
-            sudo nbd-client \
-              -d /dev/nbd0 \
-              || true
-
           # ==========================================================
           # FILE-BASED HANDOFF WATCHDOG
           # ==========================================================
@@ -1230,6 +1232,25 @@ jobs:
           echo "File found:"
           echo "$HANDOFF_FILE"
           echo "=========================================="
+
+
+          sudo sync || true
+          
+          echo "Unmounting ROM image..."
+
+          sudo umount \
+            /storage/android-rom/rom \
+            || true
+
+          echo "Unmounting OUT storage..."
+
+          sudo umount \
+            /storage/android-out/out \
+            || true
+
+          sudo nbd-client \
+            -d /dev/nbd0 \
+            || true
 
           OLD_OUT_IP_FILE="$GITHUB_WORKSPACE/out_runner_ip"
 
