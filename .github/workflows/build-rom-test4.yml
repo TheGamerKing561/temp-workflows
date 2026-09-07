@@ -1184,6 +1184,24 @@ jobs:
         run: |
           set -e
 
+          sudo sync || true
+          
+            echo "Unmounting ROM image..."
+
+            sudo umount \
+              /storage/android-rom/rom \
+              || true
+
+            echo "Unmounting OUT storage..."
+
+            sudo umount \
+              /storage/android-out/out \
+              || true
+
+            sudo nbd-client \
+              -d /dev/nbd0 \
+              || true
+
           # ==========================================================
           # FILE-BASED HANDOFF WATCHDOG
           # ==========================================================
@@ -1212,28 +1230,6 @@ jobs:
           echo "File found:"
           echo "$HANDOFF_FILE"
           echo "=========================================="
-
-          # ==========================================================
-          # PREPARE FOR HANDOFF
-          # ==========================================================
-
-          sudo sync || true
-
-          echo "Unmounting ROM image..."
-
-          sudo umount \
-            /storage/android-rom/rom \
-            || true
-
-          echo "Unmounting OUT storage..."
-
-          sudo umount \
-            /storage/android-out/out \
-            || true
-
-          sudo nbd-client \
-            -d /dev/nbd0 \
-            || true
 
           OLD_OUT_IP_FILE="$GITHUB_WORKSPACE/out_runner_ip"
 
