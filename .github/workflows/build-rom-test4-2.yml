@@ -380,7 +380,7 @@ jobs:
           echo "ROM mount:"
           mount | grep "$ROM_MOUNT"
 
-          sudo mkdir -p /storage/android-prebuilts/prebuilts
+          sudo mkdir -p /storage/android-rom/rom/prebuilts
           
           sudo nbd-client \
               ${{ inputs.prebuilts_ip }} \
