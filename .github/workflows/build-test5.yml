@@ -89,7 +89,7 @@ on:
         type: number
 
       use_external_storage:
-        description: Store .repo and prebuilts on a separate STORAGE runner
+        description: Store prebuilts folder on a separate STORAGE runner (to save main runner storage space)
         required: false
         default: false
         type: boolean
@@ -524,7 +524,7 @@ jobs:
           echo "STORAGE workflow ID: $STORAGE_RUN_ID"
 
           sudo modprobe nbd max_part=8
-          sudo mkdir -p /storage/android-storage/mnt
+          sudo mkdir -p /storage/android-rom/rom/prebuilts
 
           CONNECTED=false
           for i in {1..120}; do
@@ -549,37 +549,15 @@ jobs:
 
           sudo mount \
             /dev/nbd3 \
-            /storage/android-storage/mnt
+            /storage/android-rom/rom/prebuilts
 
-          sudo chown runner:runner /storage/android-storage/mnt
-
-          ROM_DIR="/storage/android-rom/rom"
-          STORAGE="/storage/android-storage/mnt"
-
-          echo "Moving .repo and prebuilts onto STORAGE..."
-
-          if [[ -e "$ROM_DIR/.repo" || -L "$ROM_DIR/.repo" ]]; then
-            rm -rf "$STORAGE/.repo"
-            mv "$ROM_DIR/.repo" "$STORAGE/.repo"
-          else
-            echo "WARNING: $ROM_DIR/.repo does not exist."
-          fi
-
-          if [[ -e "$ROM_DIR/prebuilts" || -L "$ROM_DIR/prebuilts" ]]; then
-            rm -rf "$STORAGE/prebuilts"
-            mv "$ROM_DIR/prebuilts" "$STORAGE/prebuilts"
-          else
-            mkdir -p "$STORAGE/prebuilts"
-          fi
-
-          ln -s "$STORAGE/.repo" "$ROM_DIR/.repo"
-          ln -s "$STORAGE/prebuilts" "$ROM_DIR/prebuilts"
+          sudo chown runner:runner /storage/android-rom/rom/prebuilts
 
           echo "=========================================="
           echo "STORAGE CONNECTED BEFORE SYNC"
           echo "=========================================="
 
-          df -h /storage/android-storage/mnt
+          df -h /storage/android-rom/rom/prebuilts
 
       - name: Sync sources
         if: inputs.role == 'main'
@@ -1608,7 +1586,7 @@ jobs:
           echo "STORAGE workflow ID: $STORAGE_RUN_ID"
 
           sudo modprobe nbd max_part=8
-          sudo mkdir -p /storage/android-storage/mnt
+          sudo mkdir -p /storage/android-rom/rom/prebuilts
 
           CONNECTED=false
           for i in {1..120}; do
@@ -1633,21 +1611,13 @@ jobs:
 
           sudo mount \
             /dev/nbd3 \
-            /storage/android-storage/mnt
-
-          ROM_DIR="/storage/android-rom/rom"
-          STORAGE="/storage/android-storage/mnt"
-
-          rm -rf "$ROM_DIR/.repo" "$ROM_DIR/prebuilts"
-
-          ln -s "$STORAGE/.repo" "$ROM_DIR/.repo"
-          ln -s "$STORAGE/prebuilts" "$ROM_DIR/prebuilts"
+            /storage/android-rom/rom/prebuilts
 
           echo "=========================================="
           echo "STORAGE CONNECTED"
           echo "=========================================="
 
-          df -h /storage/android-storage/mnt
+          df -h /storage/android-rom/rom/prebuilts
 
       - name: Builder - Connect to OUT storage
         if: inputs.role == 'builder'
@@ -1824,12 +1794,14 @@ jobs:
               echo "Unmounting STORAGE..."
 
               sudo umount \
-                /storage/android-storage/mnt \
+                /storage/android-rom/rom/prebuilts \
                 || true
 
               sudo nbd-client \
                 -d /dev/nbd3 \
                 || true
+
+              rm -rf /storage/android-rom/rom/prebuilts
             fi
 
             OLD_OUT_IP_FILE="$GITHUB_WORKSPACE/out_runner_ip"
