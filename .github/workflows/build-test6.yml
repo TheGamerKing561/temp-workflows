@@ -666,6 +666,10 @@ jobs:
           sudo chown -R runner:runner /storage/android-storage
           sudo chmod 755 /storage/android-storage
 
+          sudo mkdir -p /storage/android-rbe
+          sudo chown -R runner:runner /storage/android-rbe
+          sudo chmod 755 /storage/android-rbe
+
           STORAGE_IMG=/storage/android-storage/storage.img
 
           if [[ -n "${{ inputs.old_storage_ip }}" ]]; then
