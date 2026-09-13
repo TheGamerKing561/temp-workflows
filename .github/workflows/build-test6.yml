@@ -1011,6 +1011,10 @@ jobs:
           sudo chown -R runner:runner /storage/android-out
           sudo chmod 755 /storage/android-out
 
+          sudo mkdir -p /storage/android-rbe
+          sudo chown -R runner:runner /storage/android-rbe
+          sudo chmod 755 /storage/android-rbe
+
           OUT_IMG=/storage/android-out/out.img
 
           if [[ -n "${{ inputs.old_out_ip }}" ]]; then
