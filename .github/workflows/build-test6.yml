@@ -1989,14 +1989,21 @@ jobs:
               export RBE_service="$RBE_STORAGE_IP:8980"
               export RBE_instance=""
               export RBE_DIR="prebuilts/remoteexecution-client/live"
+
+              export RBE_use_rpc_credentials=false
+              export RBE_use_application_default_credentials=false
+              export RBE_use_gce_credentials=false
+
               export RBE_CXX_EXEC_STRATEGY="remote_local_fallback"
               export RBE_JAVAC_EXEC_STRATEGY="remote_local_fallback"
               export RBE_R8_EXEC_STRATEGY="remote_local_fallback"
               export RBE_D8_EXEC_STRATEGY="remote_local_fallback"
+
               export RBE_JAVAC=1
               export RBE_R8=1
               export RBE_D8=1
               export NINJA_REMOTE_NUM_JOBS=16
+
               export RBE_log_dir=/tmp/rbe
               export RBE_output_dir=/tmp/rbe
               export RBE_proxy_log_dir=/tmp/rbe
