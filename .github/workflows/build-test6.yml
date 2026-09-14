@@ -2013,8 +2013,8 @@ jobs:
               cat > "$RBE_WRAPPER_DIR/reproxy" <<EOF
               #!/bin/bash
               exec "$RBE_REAL_REPROXY" \
-                -use_rpc_credentials=false \
-                "\$@"
+                  -use_rpc_credentials=false \
+                  "\$@"
               EOF
 
               chmod +x "$RBE_WRAPPER_DIR/reproxy"
