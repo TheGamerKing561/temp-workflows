@@ -1976,10 +1976,12 @@ jobs:
                 export $CUSTOM_ENV
               fi
 
-              # Android/Soong RBE client configuration. The BuildBarn frontend is
-              # on the current STORAGE runner. Soong starts reproxy locally and
-              # reproxy sends REAPI actions to RBE_service.
+              # Android/Soong RBE client configuration.
+              # The BuildBarn frontend is on the current STORAGE runner.
+              # Soong starts reproxy locally and reproxy sends REAPI actions
+              # to RBE_service.
               RBE_STORAGE_IP=$(cat "$GITHUB_WORKSPACE/storage_runner_ip" 2>/dev/null | tr -d '[:space:]')
+
               if [[ -z "$RBE_STORAGE_IP" ]]; then
                 echo "ERROR: storage_runner_ip is missing; cannot start RBE."
                 exit 1
@@ -2006,19 +2008,19 @@ jobs:
               export RBE_download_tmp_dir=/tmp/rbe
               mkdir -p /tmp/rbe
 
+              # Wrap reproxy so it does not try to use Google/RPC credentials.
               RBE_REAL_REPROXY="$RBE_DIR/reproxy"
               RBE_WRAPPER_DIR="/tmp/rbe-wrapper"
               mkdir -p "$RBE_WRAPPER_DIR"
 
-              cat << 'RBE_EOF' > "$RBE_WRAPPER_DIR/reproxy"
-              #!/bin/bash
-              exec "$RBE_REAL_REPROXY" \
-                  -use_rpc_credentials=false \
-                  "\$@"
-              RBE_EOF
+              cat > "$RBE_WRAPPER_DIR/reproxy" <<RBE_EOF
+          #!/bin/bash
+          exec "$RBE_REAL_REPROXY" \
+              -use_rpc_credentials=false \
+              "\$@"
+          RBE_EOF
 
               chmod +x "$RBE_WRAPPER_DIR/reproxy"
-
               export RBE_re_proxy="$RBE_WRAPPER_DIR/reproxy"
 
               echo "RBE service: $RBE_service"
@@ -2033,9 +2035,9 @@ jobs:
 
               cd /storage/android-rom/rom
 
-              rm -rf /storage/android-rom/rom/out 
+              rm -rf /storage/android-rom/rom/out
               ln -s /storage/android-out/out /storage/android-rom/rom/out
-              
+
               export DEVICE='${{ inputs.device }}'
               export BUILD_TYPE='${{ inputs.build_type }}'
               export BUILD_COMMAND="$BUILD_COMMAND_INPUT"
@@ -2045,9 +2047,8 @@ jobs:
               echo "=== RUNNING BUILD COMMAND ==="
               echo "Build command: $BUILD_COMMAND"
               echo "====================================="
-              
-              eval "$BUILD_COMMAND"
 
+              eval "$BUILD_COMMAND"
             )
 
             exit_code=$?
@@ -2079,10 +2080,8 @@ jobs:
 
           if [[ "${{ inputs.role }}" == "main" ]]; then
             HANDOFF_SECONDS="${{ inputs.handoff_seconds }}"
-
           else
             HANDOFF_SECONDS=$(cat "$GITHUB_WORKSPACE/remaining_handoff_seconds")
-
           fi
 
           echo "=========================================="
