@@ -2010,7 +2010,7 @@ jobs:
               RBE_WRAPPER_DIR="/tmp/rbe-wrapper"
               mkdir -p "$RBE_WRAPPER_DIR"
 
-              cat > "$RBE_WRAPPER_DIR/reproxy" <<RBE_EOF
+              cat << 'RBE_EOF' > "$RBE_WRAPPER_DIR/reproxy"
               #!/bin/bash
               exec "$RBE_REAL_REPROXY" \
                   -use_rpc_credentials=false \
