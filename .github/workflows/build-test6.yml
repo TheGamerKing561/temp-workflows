@@ -1990,10 +1990,6 @@ jobs:
               export RBE_instance=""
               export RBE_DIR="prebuilts/remoteexecution-client/live"
 
-              export RBE_use_rpc_credentials=false
-              export RBE_use_application_default_credentials=false
-              export RBE_use_gce_credentials=false
-
               export RBE_CXX_EXEC_STRATEGY="remote_local_fallback"
               export RBE_JAVAC_EXEC_STRATEGY="remote_local_fallback"
               export RBE_R8_EXEC_STRATEGY="remote_local_fallback"
@@ -2009,6 +2005,21 @@ jobs:
               export RBE_proxy_log_dir=/tmp/rbe
               export RBE_download_tmp_dir=/tmp/rbe
               mkdir -p /tmp/rbe
+
+              RBE_REAL_REPROXY="$RBE_DIR/reproxy"
+              RBE_WRAPPER_DIR="/tmp/rbe-wrapper"
+              mkdir -p "$RBE_WRAPPER_DIR"
+
+              cat > "$RBE_WRAPPER_DIR/reproxy" <<EOF
+              #!/bin/bash
+              exec "$RBE_REAL_REPROXY" \
+                -use_rpc_credentials=false \
+                "\$@"
+              EOF
+
+              chmod +x "$RBE_WRAPPER_DIR/reproxy"
+
+              export RBE_re_proxy="$RBE_WRAPPER_DIR/reproxy"
 
               echo "RBE service: $RBE_service"
               echo "RBE strategies: remote_local_fallback"
