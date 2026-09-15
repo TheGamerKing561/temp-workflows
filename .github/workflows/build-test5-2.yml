@@ -265,7 +265,7 @@ jobs:
         run: |
           set -e
 
-          tailscale set --hostname="gha-${{ github.run_id }}-${JOB_ROLE}"
+          sudo tailscale set --hostname="gha-${{ github.run_id }}-${JOB_ROLE}"
 
           TS_IP=$(tailscale ip -4)
 
@@ -1562,7 +1562,7 @@ jobs:
         run: |
           set -e
 
-          tailscale set --hostname="gha-${{ github.run_id }}-${JOB_ROLE}"
+          sudo tailscale set --hostname="gha-${{ github.run_id }}-${JOB_ROLE}"
 
           TS_IP=$(tailscale ip -4)
 
@@ -1837,7 +1837,7 @@ jobs:
         run: |
           set -e
 
-          tailscale set --hostname="gha-${{ github.run_id }}-${JOB_ROLE}"
+          sudo tailscale set --hostname="gha-${{ github.run_id }}-${JOB_ROLE}"
 
           TS_IP=$(tailscale ip -4)
 
