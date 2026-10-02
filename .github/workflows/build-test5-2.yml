@@ -537,12 +537,54 @@ jobs:
           cleanup() {
             echo ""
             echo "=== ROM SUBDIRECTORY SIZES ==="
-            du -sh /storage/android-rom/rom/*/ 2>/dev/null | sort -h || true
-
+          
+            CHECK_START=$(date +%s)
+            CHECK_TIMEOUT=600
+          
+            # List top-level ROM directories, excluding prebuilts.
+            # One global 10-minute timeout applies to all size checks.
+            find /storage/android-rom/rom \
+              -mindepth 1 \
+              -maxdepth 1 \
+              -type d \
+              ! -name "prebuilts" \
+              -print0 |
+            while IFS= read -r -d '' dir; do
+              NOW=$(date +%s)
+          
+              if (( NOW - CHECK_START >= CHECK_TIMEOUT )); then
+                echo "Size check timeout reached (10 minutes)."
+                break
+              fi
+          
+              REMAINING=$((CHECK_TIMEOUT - (NOW - CHECK_START)))
+          
+              timeout "$REMAINING"s du -sh "$dir" 2>/dev/null || {
+                if (( $(date +%s) - CHECK_START >= CHECK_TIMEOUT )); then
+                  echo "Size check timeout reached (10 minutes)."
+                  break
+                fi
+                echo "Could not calculate size: $dir"
+              }
+            done | sort -h || true
+          
             echo ""
-            echo "=== TOTAL ROM DIRECTORY SIZE ==="
-            du -sh /storage/android-rom/rom || true
-
+            echo "=== TOTAL ROM DIRECTORY SIZE (excluding prebuilts) ==="
+          
+            NOW=$(date +%s)
+          
+            if (( NOW - CHECK_START < CHECK_TIMEOUT )); then
+              REMAINING=$((CHECK_TIMEOUT - (NOW - CHECK_START)))
+          
+              timeout "$REMAINING"s \
+                du -sh \
+                  --exclude="/storage/android-rom/rom/prebuilts" \
+                  /storage/android-rom/rom \
+                2>/dev/null || echo "Total size check timed out or failed."
+            else
+              echo "Skipped: 10-minute size-check timeout already reached."
+            fi
+          
             echo ""
             echo "=== FILESYSTEM USAGE ==="
             df -h || true
