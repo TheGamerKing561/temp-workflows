@@ -1062,7 +1062,7 @@ jobs:
           sudo mkdir -p /storage/android-rom/rom/prebuilts
 
           CONNECTED=false
-          for i in {1..120}; do
+          for i in {1..720}; do
             if sudo nbd-client \
               "$STORAGE_IP" \
               10809 \
@@ -1072,7 +1072,7 @@ jobs:
               break
             fi
 
-            echo "STORAGE NBD server not ready yet... ($i/120)"
+            echo "STORAGE NBD server not ready yet... ($i/720)"
             sudo nbd-client -d /dev/nbd3 2>/dev/null || true
             sleep 5
           done
