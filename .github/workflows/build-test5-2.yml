@@ -1773,9 +1773,8 @@ jobs:
                 "${{ github.run_id }}" \
                 --repo "${{ github.repository }}" \
                 --json jobs \
-                --jq --arg job "$PARENT_JOB" \
-                  '.jobs[] | select(.name == $job) | .conclusion' \
-                2>/dev/null | head -n1
+                --jq '.jobs[] | select(.name == "main") | .conclusion' \
+                2>/dev/null || true
             )
 
             echo "Parent job ($PARENT_JOB) conclusion: ${PARENT_CONCLUSION:-in_progress}"
@@ -1784,10 +1783,8 @@ jobs:
               success|failure|cancelled|timed_out|skipped)
                 echo "Parent job is no longer active."
                 echo "Stopping OUT runner."
-
                 sudo sync || true
                 sudo pkill nbd-server || true
-
                 exit 0
                 ;;
             esac
@@ -2048,9 +2045,8 @@ jobs:
                 "${{ github.run_id }}" \
                 --repo "${{ github.repository }}" \
                 --json jobs \
-                --jq --arg job "$PARENT_JOB" \
-                  '.jobs[] | select(.name == $job) | .conclusion' \
-                2>/dev/null | head -n1
+                --jq '.jobs[] | select(.name == "main") | .conclusion' \
+                2>/dev/null || true
             )
 
             echo "Parent job ($PARENT_JOB) conclusion: ${PARENT_CONCLUSION:-in_progress}"
@@ -2059,10 +2055,8 @@ jobs:
               success|failure|cancelled|timed_out|skipped)
                 echo "Parent job is no longer active."
                 echo "Stopping STORAGE runner."
-
                 sudo sync || true
                 sudo pkill nbd-server || true
-
                 exit 0
                 ;;
             esac
