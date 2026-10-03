@@ -793,7 +793,7 @@ jobs:
             "$PARENT_TS_IP" \
             10809 \
             /dev/nbd2 \
-            -N android-rom
+            -N android-rom \
             -C 8 \
             -b 4096
 
@@ -1711,7 +1711,7 @@ jobs:
               "${{ inputs.old_out_ip }}" \
               10809 \
               /dev/nbd1 \
-              -N android-out
+              -N android-out \
               -C 8 \
               -b 4096
 
@@ -1985,7 +1985,7 @@ jobs:
               "${{ inputs.old_storage_ip }}" \
               10809 \
               /dev/nbd3 \
-              -N android-storage
+              -N android-storage \
               -C 8 \
               -b 4096
 
