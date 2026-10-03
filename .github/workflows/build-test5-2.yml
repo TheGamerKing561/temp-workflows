@@ -1089,7 +1089,7 @@ jobs:
           OUT_HOST="gha-${{ github.run_id }}-out"
           OUT_IP=""
 
-          for i in {1..120}; do
+          for i in {1..720}; do
             OUT_IP=$(
               tailscale status --json 2>/dev/null |
                 jq -r --arg host "$OUT_HOST" \
@@ -1102,7 +1102,7 @@ jobs:
               break
             fi
 
-            echo "Waiting for OUT runner... ($i/120)"
+            echo "Waiting for OUT runner... ($i/720)"
             sleep 5
           done
 
