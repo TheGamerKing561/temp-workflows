@@ -794,6 +794,8 @@ jobs:
             10809 \
             /dev/nbd2 \
             -N android-rom
+            -C 8 \
+            -b 4096
 
           echo "Copying ROM image..."
 
@@ -1710,6 +1712,8 @@ jobs:
               10809 \
               /dev/nbd1 \
               -N android-out
+              -C 8 \
+              -b 4096
 
             echo "Copying OUT image..."
 
@@ -1982,6 +1986,8 @@ jobs:
               10809 \
               /dev/nbd3 \
               -N android-storage
+              -C 8 \
+              -b 4096
 
             echo "Copying STORAGE image..."
 
