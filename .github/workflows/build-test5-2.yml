@@ -953,20 +953,6 @@ jobs:
           fi
 
           # ==========================================================
-          # STOP PARENT
-          # ==========================================================
-
-          echo "=========================================="
-          echo "STOPPING PARENT WORKFLOW"
-          echo "=========================================="
-
-          gh run cancel \
-            "${{ inputs.parent_run_id }}" \
-            --repo "${{ github.repository }}"
-
-          echo "Parent cancellation requested."
-
-          # ==========================================================
           # FINAL STATUS
           # ==========================================================
 
@@ -1143,6 +1129,20 @@ jobs:
           echo "=========================================="
 
           df -h /storage/android-out/out
+
+          # ==========================================================
+          # STOP PARENT
+          # ==========================================================
+
+          echo "=========================================="
+          echo "STOPPING PARENT WORKFLOW"
+          echo "=========================================="
+
+          gh run cancel \
+            "${{ inputs.parent_run_id }}" \
+            --repo "${{ github.repository }}"
+
+          echo "Parent cancellation requested."
 
 
       - name: Build ROM
