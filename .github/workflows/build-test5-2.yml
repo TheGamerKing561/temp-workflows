@@ -1114,11 +1114,26 @@ jobs:
           sudo modprobe nbd max_part=8
           sudo mkdir -p /storage/android-out/out
 
-          sudo nbd-client \
-            "$OUT_IP" \
-            10809 \
-            /dev/nbd0 \
-            -N android-out
+          CONNECTED=false
+          for i in {1..720}; do
+            if sudo nbd-client \
+              "$OUT_IP" \
+              10809 \
+              /dev/nbd0 \
+              -N android-out; then
+              CONNECTED=true
+              break
+            fi
+
+            echo "OUT NBD server not ready yet... ($i/720)"
+            sudo nbd-client -d /dev/nbd0 2>/dev/null || true
+            sleep 5
+          done
+
+          if [[ "$CONNECTED" != "true" ]]; then
+            echo "ERROR: Could not connect to OUT NBD server."
+            exit 1
+          fi
 
           sudo mount \
             /dev/nbd0 \
