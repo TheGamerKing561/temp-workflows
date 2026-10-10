@@ -1732,7 +1732,7 @@ jobs:
 
             echo "Copying OUT image..."
 
-            sudo truncate -s 125G "$OUT_IMG"
+            sudo truncate -s 130G "$OUT_IMG"
 
             sudo dd \
               if=/dev/nbd1 \
@@ -1752,7 +1752,7 @@ jobs:
             echo "INITIAL OUT RUNNER"
             echo "=========================================="
 
-            sudo truncate -s 125G "$OUT_IMG"
+            sudo truncate -s 130G "$OUT_IMG"
             sudo mkfs.ext4 -F "$OUT_IMG"
 
           fi
